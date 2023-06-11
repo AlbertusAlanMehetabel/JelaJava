@@ -29,7 +29,7 @@ exports.refreshToken = async (req, res) => {
       }
 
       // Buat access token baru
-      const accessToken = jwt.sign({ uid: userId }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '20s' });
+      const accessToken = jwt.sign({ uid: userId }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
 
       // Berikan jawaban jika berhasil
       res.status(200).json({ message: 'Akses token baru berhasil dibuat', accessToken });

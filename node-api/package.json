@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@google-cloud/storage": "^6.10.1",
+    "@googlemaps/google-maps-services-js": "^3.3.31",
     "axios": "^1.4.0",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.2",

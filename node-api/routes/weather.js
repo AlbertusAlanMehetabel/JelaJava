@@ -7,15 +7,26 @@
 
 /**
  * @swagger
- * /weather:
- *   get:
- *     summary: Get weather information
+ * /api/weather:
+*   get:
+ *     summary: Get weather data
  *     tags: [Weather]
  *     security:
  *       - BearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: city
+ *         required: true
+ *         description: City name for weather data
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
- *         description: Weather information retrieved successfully
+ *         description: Weather data retrieved successfully
+ *       400:
+ *         description: Bad request, missing city parameter
+ *       404:
+ *         description: Weather data not found
  *       500:
  *         description: Internal server error
  */

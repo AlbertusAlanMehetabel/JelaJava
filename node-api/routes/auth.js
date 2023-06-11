@@ -17,7 +17,21 @@
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/RegisterData'
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               confPassword:
+ *                 type: string
+ *             example:
+ *               name: John Doe
+ *               email: john@example.com
+ *               password: password123
+ *               confPassword: password123
  *     responses:
  *       200:
  *         description: User registered successfully
@@ -39,7 +53,15 @@
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/LoginData'
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *             example:
+ *               email: john@example.com
+ *               password: password123
  *     responses:
  *       200:
  *         description: User logged in successfully

@@ -1,4 +1,5 @@
 const axios = require('axios');
+const { mapsClient } = require('../config/mapsClient');
 
 exports.getMaps = async (req, res) => {
   try {
@@ -40,3 +41,39 @@ exports.getMaps = async (req, res) => {
     res.status(500).json({ message: 'Terjadi kesalahan saat mengambil data dari Google Maps API', error: error.message });
   }
 };
+
+exports.getRoutes = async (req, res) => {
+  const { from, to } = req.query;
+
+  try {
+    console.log(`Finding routes from ${from} to ${to}`);
+
+    // Mengatur parameter permintaan arah
+    const directionsParams = {
+      key: process.env.GOOGLE_MAPS_API_KEY,
+      origin: from,
+      destination: to,
+      mode: 'transit',
+      alternatives: true
+    };
+
+    // Mengirim permintaan arah ke Google Maps API
+    const directionsResponse = await mapsClient.directions({ params: directionsParams });
+
+    // Mengambil rute dari respons API
+    const routes = directionsResponse.data.routes;
+
+    if (routes && routes.length > 0) {
+      // Jika terdapat rute yang ditemukan
+      res.status(200).json({ message: 'Rute didapatkan', routes });
+    } else {
+      // Jika tidak ditemukan rute
+      res.status(404).json({ message: 'Tidak ditemukan rute untuk perjalanan yang diberikan.' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Terjadi kesalahan saat mengambil data rute', error: error.message });
+  }
+};
+
+

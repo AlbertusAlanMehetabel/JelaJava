@@ -7,7 +7,7 @@
 
 /**
  * @swagger
- * /maps:
+ * /api/maps:
  *   get:
  *     summary: Get geocoding data
  *     tags: [Maps]
@@ -31,23 +31,45 @@
  *         description: Internal server error
  */
 
+/**
+ * @swagger
+ * /api/maps/routes:
+ *   get:
+ *     summary: Get routes from origin to destination
+ *     tags: [Maps]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: from
+ *         required: true
+ *         description: Origin location
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: to
+ *         required: true
+ *         description: Destination location
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Routes retrieved successfully
+ *       404:
+ *         description: Routes not found
+ *       500:
+ *         description: Internal server error
+ */
+
 const express = require('express');
 const router = express.Router();
 const authenticate = require('../middleware/authenticate');
-const { getMaps } = require('../controllers/maps');
+const { getMaps, getRoutes } = require('../controllers/maps');
 
 // Route untuk mendapatkan data dari Geocoding
 router.get('/', authenticate, getMaps);
 
-// BELUM BERES
-
-// Route untuk mendapatkan informasi tempat
-router.get('/place/:place');
-
-// Route untuk mendapatkan direction
-router.get('/dir/:start_point/:end_point');
-
-// Route untuk mendapatkan rekomendasi kendaraan
-router.get('/');
+// Route untuk mendapatkan berbagai rute dari Directions
+router.get('/routes', authenticate, getRoutes)
 
 module.exports = router;

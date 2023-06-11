@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -15,6 +15,7 @@ const notesRoutes = require('./routes/notes');
 const mapsRoutes = require('./routes/maps');
 const weatherRoutes = require('./routes/weather');
 const { refreshToken } = require('./controllers/refresh-token');
+const { errorHandler, notFoundHandler } = require('./middleware/error');
 
 // Route untuk autentikasi
 app.use('/auth', authRoutes);
@@ -34,10 +35,18 @@ app.use('/api/weather', weatherRoutes);
 // Route untuk memperbarui token
 app.get('/refresh-token', refreshToken);
 
+// Handler untuk rute yang tidak ditemukan
+app.use(notFoundHandler);
+
+// Handler error global
+app.use(errorHandler);
+
 // Mount Swagger UI
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocs = require('./swagger');
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+swaggerDocs(app);
 
 // Jalankan server
 app.listen(port, () => {

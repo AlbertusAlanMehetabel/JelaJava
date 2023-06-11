@@ -7,7 +7,7 @@
 
 /**
  * @swagger
- * /notes:
+ * /user/notes:
  *   get:
  *     summary: Get user notes
  *     tags: [Notes]
@@ -44,7 +44,7 @@
 
 /**
  * @swagger
- * /notes/{id}:
+ * /user/notes/{id}:
  *   put:
  *     summary: Update a user note
  *     tags: [Notes]
@@ -74,7 +74,7 @@
  *       500:
  *         description: Internal server error
  *
- *   delete:
+ *   /userdelete:
  *     summary: Delete a user note
  *     tags: [Notes]
  *     security:

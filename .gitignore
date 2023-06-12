@@ -2,3 +2,4 @@ node-api/node_modules
 node-api/.env
 flask-api/__pycache__
 flask-api/.env
+.vscode

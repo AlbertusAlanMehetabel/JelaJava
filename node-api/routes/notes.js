@@ -102,7 +102,7 @@
 const express = require('express');
 const router = express.Router();
 const authenticate = require('../middleware/authenticate');
-const { createNote, updateNote, deleteNote, getAllNotes } = require('../controllers/notes');
+const { createNote, updateNote, deleteNote, getAllNotes, searchNotes } = require('../controllers/notes');
 
 // Route untuk mendapatkan catatan pengguna
 router.get('/', authenticate, getAllNotes);
@@ -115,5 +115,8 @@ router.put('/:id', authenticate, updateNote);
 
 // Route untuk menghapus catatan pengguna
 router.delete('/:id', authenticate, deleteNote);
+
+// Route untuk mencari catatan pengguna
+router.get('/search', authenticate, searchNotes);
 
 module.exports = router;

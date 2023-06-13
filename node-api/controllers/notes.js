@@ -122,3 +122,39 @@ exports.getAllNotes = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// Mencari catatan pengguna berdasarkan judul atau konten
+exports.searchNotes = async (req, res) => {
+  try {
+    // Ambil Unique ID dari request user dan query pencarian dari request query
+    const { uid } = req.user;
+    const { q } = req.query;
+
+    // Cek apakah query pencarian ada
+    if (!q) {
+      return res.status(400).json({ message: 'Query pencarian perlu diisi' });
+    }
+
+    // Mencari catatan pengguna berdasarkan judul atau konten menggunakan query Firestore
+    const notesSnapshot = await firebase
+      .firestore()
+      .collection('notes')
+      .where('user_id', '==', uid)
+      .where('title', '>=', q)
+      .where('title', '<=', q + '\uf8ff')
+      .get();
+
+    // Simpan hasil pencarian dalam array tanpa menampilkan user_id
+    const searchResults = [];
+    notesSnapshot.forEach(doc => {
+      const { user_id, ...noteData } = doc.data();
+      searchResults.push({ id: doc.id, ...noteData });
+    });
+
+    // Berikan jawaban jika berhasil
+    res.status(200).json({ message: 'Hasil pencarian berhasil didapatkan', searchResults });
+  } catch (error) {
+    // Berikan jawaban jika gagal
+    res.status(500).json({ error: error.message });
+  }
+};

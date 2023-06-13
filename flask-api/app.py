@@ -12,10 +12,31 @@ def get_model():
     global model
     if model is None:
         try:
-            model = load_model("./JelaJava.h5")
+            model = load_model("./model/JelaJava.h5")
         except Exception as e:
             return jsonify({"error": "Model gagal didapatkan", "message": str(e)}), 500
     return model
+
+
+def get_place_data():
+    try:
+        # Membaca file CSV
+        place = pd.read_csv(
+            "https://storage.googleapis.com/datasets-c23-ps222/tourism_with_id.csv"
+        )
+
+        if place is None or place.empty:
+            return jsonify({"error": "Data tidak ditemukan"}), 400
+
+        place.drop(
+            ["Time_Minutes", "Coordinate", "Lat", "Long", "Unnamed: 11", "Unnamed: 12"],
+            axis=1,
+            inplace=True,
+        )
+
+        return place
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 def get_user_input():
@@ -42,95 +63,103 @@ def get_user_input():
         )
 
 
-def get_user_preferences():
+def get_rec_number():
     try:
-        # Mendapatkan user preferences dari request body
-        preferences = request.json.get("preferences")
+        # Mendapatkan jumlah rekomendasi dari request body kalau tidak ada gunakan default
+        rec_n = request.json.get("rec_n", 5)
 
-        # Memastikan user_input tersedia
-        if preferences is None:
+        # Memastikan jumlah rekomendasi tersedia
+        if rec_n is None:
             return (
-                jsonify({"error": "User preferences tidak lengkap"}),
+                jsonify({"error": "Jumlah rekomendasi tidak lengkap"}),
                 400,
             )
-        elif preferences < 0 or preferences >= 300:
+        elif rec_n <= 1 or rec_n > 437 :
             return (
-                jsonify({"error": "Model error"}),
+                jsonify({"error": "Jumlah rekomendasi tidak sesuai"}),
                 400,
             )
-        return preferences
+        return rec_n
     except Exception as e:
         return (
-            jsonify({"error": "Terjadi kesalahan saat memproses user preferences"}),
+            jsonify({"error": "Terjadi kesalahan saat memproses jumlah rekomendasi yang dapat diberikan"}),
             500,
         )
 
 
-def get_place_data():
+def get_filtered_city_name():
     try:
-        # Membaca file CSV
-        place = pd.read_csv(
-            "https://storage.googleapis.com/datasets-c23-ps222/tourism_with_id.csv"
-        )
+        # Mendapatkan kota dari request body
+        city = request.json.get("city")
 
-        if place is None or place.empty:
-            return jsonify({"error": "Data tidak ditemukan"}), 400
-
-        place.drop(
-            ["Time_Minutes", "Coordinate", "Lat", "Long", "Unnamed: 11", "Unnamed: 12"],
-            axis=1,
-            inplace=True,
-        )
-
-        return place
+        # Memastikan kota tersedia
+        if city is None:
+            return (
+                jsonify({"error": "Kota tidak lengkap"}),
+                400,
+            )
+        elif city != 'Jakarta' and city != 'Bandung' and city != 'Surabaya' and city != 'Semarang' and city != 'Yogyakarta':
+            return (
+                jsonify({"error": "Kota tidak terdaftar"}),
+                400,
+            )
+        return city
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return (
+            jsonify({"error": "Terjadi kesalahan saat memproses nama kota"}),
+            500,
+        )
 
 
-# def preprocess_recommendations(recommendations, unrated_places):
-#     try:
-#         # Mendapatkan data tempat
-#         place = get_place_data()
-
-#         # Mengurutkan rekomendasi berdasarkan nilai prediksi
-#         top_indices_all = recommendations.flatten().argsort()[::-1]
-#         top_recommendations = unrated_places[top_indices_all]
-
-#         # Mengambil nama tempat berdasarkan indeks rekomendasi
-#         place_names = place.loc[top_recommendations, "Place_Name"].values
-#         recommended_places = []
-#         for i, place_id in enumerate(top_recommendations):
-#             recommended_places.append(place_names[i])
-
-#         # Memberikan respons jika berhasil
-#         return recommended_places
-#     except Exception as e:
-#         # Memberikan respons jika gagal
-#         return jsonify({"error": str(e)}), 500
+def user_item_matrix():
+    user = pd.read_csv ('https://raw.githubusercontent.com/deltadv/JelaJava/main/Machine%20Learning/Datasets/user.csv')
+    rating = pd.read_csv ('https://raw.githubusercontent.com/deltadv/JelaJava/main/Machine%20Learning/Datasets/tourism_rating.csv')
+    df_data = pd.merge(rating, user, on='User_Id')
+    df_data['User_Id'] = df_data['User_Id'].astype('category').cat.codes
+    df_data['Place_Id'] = df_data['Place_Id'].astype('category').cat.codes
+    num_users = df_data['User_Id'].nunique()
+    num_places = df_data['Place_Id'].nunique()
+    user_item_matrix = np.zeros((num_users, num_places))
+    return user_item_matrix
 
 
-def preprocess_recommendations(recommendations, unrated_places):
+def preprocess_recommendations(user_input, recommendations, unrated_places):
     try:
         # Mendapatkan data tempat
         place = get_place_data()
 
         # Mengurutkan rekomendasi berdasarkan nilai prediksi
-        top_indices_all = np.argsort(recommendations)[::-1]
-        top_recommendations = unrated_places[top_indices_all]
+        top_indices = np.argsort(recommendations.flatten())
+        top_recommendations = unrated_places[top_indices]
+
         # Mengambil nama tempat berdasarkan indeks rekomendasi
         place_names = place.loc[
             top_recommendations.flatten(), "Place_Name"
         ].values.reshape(top_recommendations.shape)
-        recommended_places = place_names.tolist()
+
+        place_names = []
+        for i, place_id in enumerate(top_recommendations):
+            place_names.append(place.loc[place_id, 'Place_Name',])
+
+        slicing = get_rec_number()
+
+        place_names = place_names[:slicing]
+
+        # Menyiapkan respons
+        response = {
+            "user_id": user_input,
+            "recommendations": place_names,
+            "total_recommendations": len(place_names),
+        }
 
         # Memberikan respons jika berhasil
-        return recommended_places
+        return response
     except Exception as e:
         # Memberikan respons jika gagal
         return jsonify({"error": str(e)}), 500
 
 
-@app.route("/predict", methods=["POST"])
+@app.route("/recommendation", methods=["POST"])
 def predict():
     try:
         # Mendapatkan model
@@ -143,35 +172,62 @@ def predict():
         if isinstance(user_input, tuple):
             return user_input
 
-        print(" * User Input =", user_input)
+        # Mendapatkan User ID
+        user_id = user_input - 1
 
-        preferences = request.json.get("preferences")
+        # Membuat User Item Matrix
+        user = pd.read_csv ('https://raw.githubusercontent.com/deltadv/JelaJava/main/Machine%20Learning/Datasets/user.csv')
+        rating = pd.read_csv ('https://raw.githubusercontent.com/deltadv/JelaJava/main/Machine%20Learning/Datasets/tourism_rating.csv')
+        df_data = pd.merge(rating, user, on='User_Id')
+        df_data['User_Id'] = df_data['User_Id'].astype('category').cat.codes
+        df_data['Place_Id'] = df_data['Place_Id'].astype('category').cat.codes
+        num_users = df_data['User_Id'].nunique()
+        num_places = df_data['Place_Id'].nunique()
+        user_item_matrix = np.zeros((num_users, num_places))
 
-        preferences = np.array(preferences) - 1  # place id
-        place_id = np.arange(0, 437)
-        unrated_places = np.setdiff1d(place_id, preferences)
+        user_ratings = user_item_matrix[user_id]
 
-        user_ids = np.full_like(unrated_places, user_input)  # user input
+        unrated_places = np.where(user_ratings == 0)[0]
 
-        print(" * Preferences: ", preferences)
-        print(" * place id: ", place_id)
-        print(" * unrated places: ", unrated_places)
-
-        # Melakukan prediksi dengan model
-        recommendations = model.predict([user_ids, unrated_places])
+        user_ids = np.full_like(unrated_places, user_id)
+        input = [user_ids, unrated_places]
+        recommendations = model.predict(input)
 
         # Proses sebelum pemberian rekomendasi
-        recommendations = preprocess_recommendations(recommendations, unrated_places)
+        recommendations = preprocess_recommendations(user_input, recommendations, unrated_places)
+
+        # Memberikan respons jika berhasil
+        return jsonify(recommendations), 200
+    except Exception as e:
+        # Memberikan respons jika gagal
+        return jsonify({"error": str(e)}), 500
+    
+
+@app.route("/filter", methods=["GET"])
+def filter():
+    try:
+        # Mendapatkan nama kota yang ingin difilter
+        filtered_city_name = get_filtered_city_name()
+        if isinstance(filtered_city_name, tuple):
+            return filtered_city_name
+        
+        # Mendapatkan data tempat
+        place = get_place_data()
+
+        # Mendapatkan daftar kota yang sudah difilter
+        filtered_place_names = []
+        for i in range(len(place)):
+            if place.loc[i, 'City',] == filtered_city_name:
+                filtered_place_names.append(place.loc[i, 'Place_Name',])
 
         # Menyiapkan respons
         response = {
-            "user_id": user_input,
-            "recommendations": recommendations,
-            "total_recommendations": len(recommendations),
+            "filtered_city": filtered_place_names,
+            "total_recommendations": len(filtered_place_names),
         }
 
         # Memberikan respons jika berhasil
-        return jsonify(response), 200
+        return response
     except Exception as e:
         # Memberikan respons jika gagal
         return jsonify({"error": str(e)}), 500

@@ -9,6 +9,7 @@ const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 app.use(cookieParser());
 
+const defaultRoutes = require('./routes/default');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
 const notesRoutes = require('./routes/notes');
@@ -16,6 +17,9 @@ const mapsRoutes = require('./routes/maps');
 const weatherRoutes = require('./routes/weather');
 const { refreshToken } = require('./controllers/refresh-token');
 const { errorHandler, notFoundHandler } = require('./middleware/error');
+
+// Route default
+app.use('/', defaultRoutes);
 
 // Route untuk autentikasi
 app.use('/auth', authRoutes);

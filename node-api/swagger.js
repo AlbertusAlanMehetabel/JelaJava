@@ -5,13 +5,13 @@ const options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'JelaJava',
+      title: 'JelaJava API Documentation',
       version: '1.0.0',
-      description: 'JelaJava API Documentations',
+      description: "C23-PS222 -  JelaJava's API Documentations",
     },
     servers: [
       {
-        url: 'http://localhost:3000',
+        url: 'https://node-api-froi2bfpmq-et.a.run.app/',
       },
     ],
     components: {
@@ -29,7 +29,7 @@ const options = {
       },
     ],
   },
-  apis: ['./routes/auth.js', './routes/user.js', './routes/notes.js', './routes/maps.js', './routes/weather.js'],
+  apis: ['./routes/default.js', './routes/auth.js', './routes/user.js', './routes/notes.js', './routes/maps.js', './routes/weather.js'],
 };
 
 const specs = swaggerJsdoc(options);

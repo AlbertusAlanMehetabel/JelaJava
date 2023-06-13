@@ -65,6 +65,8 @@
  *     responses:
  *       200:
  *         description: User logged in successfully
+ *       400:
+ *         description: Bad request
  *       401:
  *         description: Invalid login credentials
  *       500:

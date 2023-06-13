@@ -38,6 +38,8 @@
  *     responses:
  *       201:
  *         description: User note created successfully
+ *       400:
+ *         Bad request
  *       500:
  *         description: Internal server error
  */
@@ -71,6 +73,8 @@
  *     responses:
  *       200:
  *         description: User note updated successfully
+ *       404:
+ *         description: Note not found or user does not own the note
  *       500:
  *         description: Internal server error
  *
@@ -89,6 +93,8 @@
  *     responses:
  *       200:
  *         description: User note deleted successfully
+ *       404:
+ *         description: Note not found or user does not own the note
  *       500:
  *         description: Internal server error
  */

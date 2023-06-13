@@ -33,8 +33,6 @@
  *             properties:
  *               name:
  *                 type: string
- *               profilePicture:
- *                 type: string
  *     responses:
  *       200:
  *         description: User profile updated successfully

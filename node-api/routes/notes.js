@@ -74,7 +74,7 @@
  *       500:
  *         description: Internal server error
  *
- *   /userdelete:
+ *   delete:
  *     summary: Delete a user note
  *     tags: [Notes]
  *     security:

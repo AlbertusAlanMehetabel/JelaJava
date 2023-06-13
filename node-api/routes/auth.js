@@ -25,15 +25,15 @@
  *                 type: string
  *               password:
  *                 type: string
- *               confPassword:
+ *               confirmPassword:
  *                 type: string
  *             example:
  *               name: John Doe
  *               email: john@example.com
  *               password: password123
- *               confPassword: password123
+ *               confirmPassword: password123
  *     responses:
- *       200:
+ *       201:
  *         description: User registered successfully
  *       400:
  *         description: Invalid registration data

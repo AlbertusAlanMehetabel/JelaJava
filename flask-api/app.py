@@ -111,17 +111,6 @@ def get_filtered_city_name():
         )
 
 
-def user_item_matrix():
-    user = pd.read_csv ('https://raw.githubusercontent.com/deltadv/JelaJava/main/Machine%20Learning/Datasets/user.csv')
-    rating = pd.read_csv ('https://raw.githubusercontent.com/deltadv/JelaJava/main/Machine%20Learning/Datasets/tourism_rating.csv')
-    df_data = pd.merge(rating, user, on='User_Id')
-    df_data['User_Id'] = df_data['User_Id'].astype('category').cat.codes
-    df_data['Place_Id'] = df_data['Place_Id'].astype('category').cat.codes
-    num_users = df_data['User_Id'].nunique()
-    num_places = df_data['Place_Id'].nunique()
-    user_item_matrix = np.zeros((num_users, num_places))
-    return user_item_matrix
-
 
 def preprocess_recommendations(user_input, recommendations, unrated_places):
     try:

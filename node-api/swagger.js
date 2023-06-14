@@ -29,7 +29,7 @@ const options = {
       },
     ],
   },
-  apis: ['./routes/default.js', './routes/auth.js', './routes/user.js', './routes/notes.js', './routes/maps.js', './routes/weather.js'],
+  apis: ['./routes/default.js', './routes/auth.js', './routes/user.js', './routes/notes.js', './routes/maps.js', './routes/weather.js', './routes/ml.js'],
 };
 
 const specs = swaggerJsdoc(options);

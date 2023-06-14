@@ -21,7 +21,6 @@ exports.showUserProfile = async (req, res) => {
   }
 };
 
-const { uploadPhoto } = require('../middleware/upload');
 const { storage } = require('../config/storage');
 
 // Memperbarui profil pengguna
@@ -36,48 +35,13 @@ exports.updateUser = async (req, res) => {
 
     if (name) {
       updateData.name = name;
-    }
+      await firebase.firestore().collection('users').doc(uid).update(updateData);
 
-    // Periksa apakah ada foto yang diupload
-    if (req.file) {
-      // Generate unique filename untuk foto
-      const fileName = uuidv4();
-
-      // Ambil file foto dari request body
-      const file = req.file;
-
-      const bucket = storage.bucket(storageConfig.bucketName);
-      const gcsFileName = `profilePictures/${fileName}`;
-
-      const blob = bucket.file(gcsFileName);
-
-      const blobStream = blob.createWriteStream({
-        resumable: false,
-        metadata: {
-          contentType: file.mimetype,
-        },
-      });
-
-      blobStream.on('error', error => {
-        console.error('Error uploading file:', error);
-        res.status(500).json({ error: 'Terjadi kesalahan saat mengunggah foto' });
-      });
-
-      blobStream.on('finish', async () => {
-        // Dapatkan URL foto dari Google Cloud Storage
-        const photoURL = `https://storage.googleapis.com/${bucket.name}/${gcsFileName}`;
-
-        // Perbarui data pengguna di Firestore
-        updateData.profilePicture = photoURL;
-        await firebase.firestore().collection('users').doc(uid).update(updateData);
-
-        // Berikan jawaban jika berhasil
-        res.status(200).json({ message: 'Pengguna berhasil diperbarui', update: updateData });
-      });
-
+      // Berikan jawaban jika berhasil
+      res.status(200).json({ message: 'Pengguna berhasil diperbarui', update: updateData });
       blobStream.end(file.buffer);
     } else {
-      // Jika tidak ada foto yang diupload, langsung perbarui data pengguna di Firestore
+      // Jika tidak ada data lain yang berubah (jika ada), langsung perbarui data pengguna di Firestore
       await firebase.firestore().collection('users').doc(uid).update(updateData);
 
       // Berikan jawaban jika berhasil

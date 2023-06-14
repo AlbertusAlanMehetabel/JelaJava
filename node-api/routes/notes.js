@@ -39,7 +39,7 @@
  *       201:
  *         description: User note created successfully
  *       400:
- *         Bad request
+ *         description: Bad request
  *       500:
  *         description: Internal server error
  */

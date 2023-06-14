@@ -179,11 +179,9 @@ def predict():
         user_id = user_input - 1
 
         # Membuat User Item Matrix
-        user = pd.read_csv(
-            "https://raw.githubusercontent.com/deltadv/JelaJava/main/Machine%20Learning/Datasets/user.csv"
-        )
+        user = pd.read_csv("https://storage.googleapis.com/datasets-c23-ps222/user.csv")
         rating = pd.read_csv(
-            "https://raw.githubusercontent.com/deltadv/JelaJava/main/Machine%20Learning/Datasets/tourism_rating.csv"
+            "https://storage.googleapis.com/datasets-c23-ps222/tourism_rating.csv"
         )
         df_data = pd.merge(rating, user, on="User_Id")
         df_data["User_Id"] = df_data["User_Id"].astype("category").cat.codes
@@ -212,7 +210,7 @@ def predict():
         return jsonify({"error": str(e)}), 500
 
 
-@app.route("/filter", methods=["GET"])
+@app.route("/filter", methods=["POST"])
 def filter():
     try:
         # Mendapatkan nama kota yang ingin difilter

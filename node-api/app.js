@@ -17,6 +17,7 @@ const mapsRoutes = require('./routes/maps');
 const weatherRoutes = require('./routes/weather');
 const { refreshToken } = require('./controllers/refresh-token');
 const { errorHandler, notFoundHandler } = require('./middleware/error');
+const machineLearningRoutes = require('./routes/ml');
 
 // Route default
 app.use('/', defaultRoutes);
@@ -37,7 +38,10 @@ app.use('/api/maps', mapsRoutes);
 app.use('/api/weather', weatherRoutes);
 
 // Route untuk memperbarui token
-app.get('/refresh-token', refreshToken);
+app.use('/refresh-token', refreshToken);
+
+// Route untuk menuju API Machine Learning
+app.use('/api/ml', machineLearningRoutes);
 
 // Mount Swagger UI
 const swaggerUi = require('swagger-ui-express');

@@ -99,6 +99,33 @@
  *         description: Internal server error
  */
 
+/**
+ * @swagger
+ * /user/notes/search:
+ *   post:
+ *     summary: Search user notes by title or content
+ *     tags: [Notes]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               q:
+ *                 type: string
+ *                 description: Search query
+ *     responses:
+ *       200:
+ *         description: Search results retrieved successfully
+ *       400:
+ *         description: Bad request
+ *       500:
+ *         description: Internal server error
+ */
+
 const express = require('express');
 const router = express.Router();
 const authenticate = require('../middleware/authenticate');
@@ -117,6 +144,6 @@ router.put('/:id', authenticate, updateNote);
 router.delete('/:id', authenticate, deleteNote);
 
 // Route untuk mencari catatan pengguna
-router.get('/search', authenticate, searchNotes);
+router.post('/search', authenticate, searchNotes);
 
 module.exports = router;

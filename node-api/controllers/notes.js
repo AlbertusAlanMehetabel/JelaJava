@@ -126,35 +126,35 @@ exports.getAllNotes = async (req, res) => {
 // Mencari catatan pengguna berdasarkan judul atau konten
 exports.searchNotes = async (req, res) => {
   try {
-    // Ambil Unique ID dari request user dan query pencarian dari request query
+    // Ambil Unique ID dari user dalam permintaan
     const { uid } = req.user;
-    const { q } = req.query;
+    // Ambil kueri pencarian dari parameter kueri permintaan
+    let { q } = req.query;
 
-    // Cek apakah query pencarian ada
+    // Periksa apakah kueri pencarian telah diberikan
     if (!q) {
-      return res.status(400).json({ message: 'Query pencarian perlu diisi' });
+      return res.status(400).json({ message: 'Kueri pencarian harus diberikan' });
     }
 
-    // Mencari catatan pengguna berdasarkan judul atau konten menggunakan query Firestore
-    const notesSnapshot = await firebase
-      .firestore()
-      .collection('notes')
-      .where('user_id', '==', uid)
-      .where('title', '>=', q)
-      .where('title', '<=', q + '\uf8ff')
-      .get();
+    // Konversi kueri pencarian menjadi huruf kecil
+    q = q.toLowerCase();
 
-    // Simpan hasil pencarian dalam array tanpa menampilkan user_id
-    const searchResults = [];
-    notesSnapshot.forEach(doc => {
-      const { user_id, ...noteData } = doc.data();
-      searchResults.push({ id: doc.id, ...noteData });
-    });
+    // Cari catatan pengguna berdasarkan judul atau konten menggunakan kemampuan pencarian Firestore
+    const notesSnapshot = await firebase.firestore().collection('notes').where('user_id', '==', uid).get();
 
-    // Berikan jawaban jika berhasil
+    // Simpan hasil pencarian dalam sebuah array dengan mengubah 'title' menjadi huruf kecil
+    const searchResults = notesSnapshot.docs.reduce((result, doc) => {
+      const { title, ...noteData } = doc.data();
+      if (title.toLowerCase().includes(q)) {
+        result.push({ id: doc.id, title, ...noteData });
+      }
+      return result;
+    }, []);
+
+    // Berikan respons dengan hasil pencarian
     res.status(200).json({ message: 'Hasil pencarian berhasil didapatkan', searchResults });
   } catch (error) {
-    // Berikan jawaban jika gagal
+    // Berikan respons error jika terjadi kesalahan
     res.status(500).json({ error: error.message });
   }
 };

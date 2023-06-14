@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken');
 const validator = require('email-validator');
 const firebase = require('../config/firebase');
 
+let ml_id_now = 1;
+const model_limit = 299;
 // Pengguna daftar
 exports.register = async (req, res) => {
   try {
@@ -33,12 +35,20 @@ exports.register = async (req, res) => {
     // Enkripsi password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Mengambil total pengguna terdaftar
+    const totalUsersSnapshot = await firebase.firestore().collection('users').get();
+    const totalUsersNow = totalUsersSnapshot.size;
+
+    const ml_user_input = (totalUsersNow % model_limit) + 1;
+    ml_id_now = ml_user_input + 1 > model_limit ? 1 : ml_user_input + 1;
+
     // Membuat object pengguna baru
     const newUser = {
       name,
       email,
       password: hashedPassword,
       profilePicture: 'https://storage.googleapis.com/user-image-bucket-c23-ps222/default.jpg', // Default URL
+      ml_user_input,
       refreshToken: null,
     };
 

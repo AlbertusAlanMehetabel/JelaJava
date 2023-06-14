@@ -8,7 +8,7 @@
 /**
  * @swagger
  * /api/weather:
-*   get:
+ *   get:
  *     summary: Get weather data
  *     tags: [Weather]
  *     security:

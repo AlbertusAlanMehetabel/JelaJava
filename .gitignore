@@ -1,3 +1,5 @@
+node-api/config/cloud-bucketsdk.json
+node-api/config/firebase-adminsdk.json
 node-api/node_modules
 node-api/.env
 flask-api/__pycache__

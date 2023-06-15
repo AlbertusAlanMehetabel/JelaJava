@@ -37,8 +37,10 @@ C -- REST API --> D[JSON]
 ## How To Run This API
 
 1.  Clone this [repository](https://github.com/AlbertusAlanMehetabel/JelaJava/tree/backend)
-2.  Go to this project's root directory
-3.  Open your favorite terminal
-4.  Type npm install and hit enter
-5.  Type npm run start-dev
-6.  It will run on http://localhost:3000
+2.  Make your own Firebase and Cloud Bucket credentials
+3.  Configure the environment variable
+4.  Go to this project's root directory
+5.  Open your favorite terminal
+6.  Type npm install and hit enter
+7.  Type npm run start-dev
+8.  It will run on http://localhost:3000

@@ -16,3 +16,8 @@ As for the stages carried out, including:
 3. Deployment 
 
 After all the above processes have been carried out, it will produce an h5 model and JSON file.
+
+## Model Infrastructure
+![Uploading Screenshot 2023-06-16 141530.png…]()
+
+

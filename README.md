@@ -9,10 +9,10 @@
 
 ## Description
 
-Machine Learning merupakan logika atau otak dari aplikasi JelaJava.
-adapun tahapan yang dilakukan, diantaranya:
+Machine Learning is the logic or brain of the JelaJava application.
+As for the stages carried out, including:
 1. Collecting Dataset
-2. Melakukan Modelling
-3. Melakukan Deployment 
+2. Modeling
+3. Deployment 
 
-Setelah proses diatas sudah dilakukan semua, akan menghasilkan sebuah model h5 dan json file.
+After all the above processes have been carried out, it will produce an h5 model and JSON file.

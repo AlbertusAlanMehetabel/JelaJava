@@ -12,6 +12,12 @@ Team ID: C23-PS222
 |A037DKX4425|Athallahriq Muhammad Sultan|Mobile Development|[Click Here](https://www.linkedin.com/in/athallahriq-sultan-642102242/)|
 |A037DSY2802|Nafiza Sheila Faradila|Mobile Development|[Click Here](https://www.linkedin.com/in/nafiza-sheila-faradila-437460203/)|
 
+## Branch
+
+- [Backend](https://github.com/AlbertusAlanMehetabel/JelaJava/tree/backend)
+- [Frontend](https://github.com/AlbertusAlanMehetabel/JelaJava/tree/frontend)
+- [Machine-learning](https://github.com/AlbertusAlanMehetabel/JelaJava/tree/machine-learning)
+
 ## Project
 
 **Theme**: `Tourism, Cultural, and Hospitality`
@@ -33,9 +39,9 @@ Prerequisites:
 
 Usage:
 
-1.  Download and install the [APK](https://play.google.com/store/apps/details?id=)
+1.  Download and install the [APK](https://drive.google.com/file/d/1Bl4LOg3VY4cJKu34rs7bcSCs9rXZS9aA/view?usp=drive_link)
 2.  Open the app and do some registration
 3.  Login to your account
-4.  Search a few destination you like
-5.  Get some recommendation
-6.  Add a notes for travelling later
+4.  Get some recommendation
+5.  Make a notes for travelling later
+6.  Search destination you want
